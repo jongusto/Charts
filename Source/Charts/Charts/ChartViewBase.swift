@@ -17,30 +17,39 @@ import CoreGraphics
     import UIKit
 #endif
 
-@objc
-public protocol ChartViewDelegate
+public protocol ChartViewDelegate: AnyObject
 {
     /// Called when a value has been selected inside the chart.
     ///
     /// - Parameters:
     ///   - entry: The selected Entry.
     ///   - highlight: The corresponding highlight object that contains information about the highlighted position such as dataSetIndex etc.
-    @objc optional func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight)
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight)
     
     /// Called when a user stops panning between values on the chart
-    @objc optional func chartViewDidEndPanning(_ chartView: ChartViewBase)
+    func chartViewDidEndPanning(_ chartView: ChartViewBase)
     
     // Called when nothing has been selected or an "un-select" has been made.
-    @objc optional func chartValueNothingSelected(_ chartView: ChartViewBase)
+    func chartValueNothingSelected(_ chartView: ChartViewBase)
     
     // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
-    @objc optional func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat)
+    func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat)
     
     // Callbacks when the chart is moved / translated via drag gesture.
-    @objc optional func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat)
+    func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat)
 
     // Callbacks when Animator stops animating
-    @objc optional func chartView(_ chartView: ChartViewBase, animatorDidStop animator: Animator)
+    func chartView(_ chartView: ChartViewBase, animatorDidStop animator: Animator)
+}
+
+/// Optional protocol methods
+public extension ChartViewDelegate {
+  func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {}
+  func chartViewDidEndPanning(_ chartView: ChartViewBase) {}
+  func chartValueNothingSelected(_ chartView: ChartViewBase) {}
+  func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {}
+  func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {}
+  func chartView(_ chartView: ChartViewBase, animatorDidStop animator: Animator) {}
 }
 
 open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
@@ -85,7 +94,7 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
     @objc open internal(set) lazy var legend = Legend()
 
     /// delegate to receive chart events
-    @objc open weak var delegate: ChartViewDelegate?
+    open weak var delegate: ChartViewDelegate?
     
     /// text that is displayed when the chart is empty
     @objc open var noDataText = "No chart data available."
@@ -445,7 +454,7 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
                 highlighted.removeAll(keepingCapacity: false)
                 if callDelegate
                 {
-                    delegate?.chartValueNothingSelected?(self)
+                    delegate?.chartValueNothingSelected(self)
                 }
                 setNeedsDisplay()
                 return
@@ -457,7 +466,7 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         if callDelegate
         {
             // notify the listener
-            delegate?.chartValueSelected?(self, entry: entry, highlight: h)
+            delegate?.chartValueSelected(self, entry: entry, highlight: h)
         }
 
         // redraw the chart
@@ -863,7 +872,7 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
     
     open func animatorStopped(_ chartAnimator: Animator)
     {
-        delegate?.chartView?(self, animatorDidStop: chartAnimator)
+        delegate?.chartView(self, animatorDidStop: chartAnimator)
     }
     
     // MARK: - Touches

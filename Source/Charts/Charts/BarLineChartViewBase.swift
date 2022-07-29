@@ -579,7 +579,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 }
                 
                 self.zoom(scaleX: isScaleXEnabled ? 1.4 : 1.0, scaleY: isScaleYEnabled ? 1.4 : 1.0, x: location.x, y: location.y)
-                delegate?.chartScaled?(self, scaleX: scaleX, scaleY: scaleY)
+                delegate?.chartScaled(self, scaleX: scaleX, scaleY: scaleY)
             }
         }
     }
@@ -665,7 +665,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
 
                     if delegate !== nil
                     {
-                        delegate?.chartScaled?(self, scaleX: scaleX, scaleY: scaleY)
+                        delegate?.chartScaled(self, scaleX: scaleX, scaleY: scaleY)
                     }
                 }
                 
@@ -796,7 +796,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 _outerScrollView = nil
             }
 
-            delegate?.chartViewDidEndPanning?(self)
+            delegate?.chartViewDidEndPanning(self)
         }
     }
     
@@ -825,7 +825,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         
         if matrix != originalMatrix
         {
-            delegate?.chartTranslated?(self, dX: translation.x, dY: translation.y)
+            delegate?.chartTranslated(self, dX: translation.x, dY: translation.y)
         }
         
         // Did we managed to actually drag or did we reach the edge?
